@@ -1,0 +1,35 @@
+# Go
+*.test
+*.out
+/bin/
+/dist/
+
+# Go vendor (dependency vendoring — NOT the same as third_party/)
+/vendor/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+.pnpm-store/
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local secrets
+.env
+.env.local
+*.pem
+*.key
+!*.example.pem
+
+# Experiment artifacts
+/labs/**/bench-results/
+*.bench
