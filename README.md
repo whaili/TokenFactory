@@ -39,7 +39,7 @@ TokenFactory/
 ├── labs/                  # 可运行的演示与基准测试
 │   ├── 01-jwt-paseto-opaque/   # 三种 token 形态的实现对比 + 基准
 │   └── 02-macaroon/            # Macaroon 的委派模型实验
-├── vendor/                # 通过 git subtree 引入的开源项目源码（供阅读/改造）
+├── third_party/           # 通过 git subtree 引入的开源项目源码（供阅读/改造）
 ├── tools/                 # 辅助脚本（subtree 同步、笔记索引生成等）
 └── .github/workflows/     # CI
 ```
@@ -78,7 +78,7 @@ TokenFactory/
 | 轮换 | JWKS 多 key 并存、kid 路由、灰度切换、紧急吊销（`jku` / `x5c` 风险） |
 | 熵与随机 | CSPRNG 正确用法、UUIDv4 vs ULID vs KID 的碰撞与可枚举性 |
 
-### 开源实现（`vendor/` + 依赖）
+### 开源实现（`third_party/` + 依赖）
 
 | 项目 | Stars | 语言 | 定位 | 引入方式 |
 |---|---|---|---|---|
@@ -92,18 +92,18 @@ TokenFactory/
 | [zitadel/zitadel](https://github.com/zitadel/zitadel) | 15.4k | Go | 完整 IAM / OIDC provider | 阅读为主 |
 | [MicahParks/keyfunc](https://github.com/MicahParks/keyfunc) | 416 | Go | JWKS 缓存与轮换处理 | subtree |
 
-> Stars / 语言数据随时间变化，以 `vendor/README.md` 中记录的时间点为准。
+> Stars / 语言数据随时间变化，以 `third_party/README.md` 中记录的时间点为准。
 
 ### 引入策略：为什么用 git subtree
 
-本仓库对「需要读源码 / 需要改造」的开源项目使用 **git subtree** 引入到 `vendor/`：
+本仓库对「需要读源码 / 需要改造」的开源项目使用 **git subtree** 引入到 `third_party/`：
 
 ```bash
 # 引入
-git subtree add --prefix=vendor/golang-jwt-jwt https://github.com/golang-jwt/jwt.git v5 --squash
+git subtree add --prefix=third_party/golang-jwt-jwt https://github.com/golang-jwt/jwt.git v5 --squash
 
 # 同步上游更新
-git subtree pull --prefix=vendor/golang-jwt-jwt https://github.com/golang-jwt/jwt.git v5 --squash
+git subtree pull --prefix=third_party/golang-jwt-jwt https://github.com/golang-jwt/jwt.git v5 --squash
 ```
 
 **为什么不用 submodule**：
@@ -118,10 +118,13 @@ git subtree pull --prefix=vendor/golang-jwt-jwt https://github.com/golang-jwt/jw
 
 **subtree 的代价**：仓库体积更大（`--squash` 已压缩为单 commit），且上游更新需要手动 pull。这是可接受的代价 —— 本仓库的目标是**长期可阅读**，而不是永远跟得上上游。
 
-**什么该进 `vendor/`，什么不该**：
+> **命名说明**：`third_party/` 而不是 `vendor/` —— 因为 Go 工具链把 `vendor/` 保留给
+> `go mod vendor` 管理的依赖目录。两者语义不同，不能混用。
 
-- ✅ 进 `vendor/`：需要**读源码**、需要**改造**、需要**跑起来做实验**的项目
-- ❌ 不进 `vendor/`：只是想**调用**的库 —— 直接走 `go.mod` 依赖，版本由 `go.sum` 锁定
+**什么该进 `third_party/`，什么不该**：
+
+- ✅ 进 `third_party/`：需要**读源码**、需要**改造**、需要**跑起来做实验**的项目
+- ❌ 不进 `third_party/`：只是想**调用**的库 —— 直接走 `go.mod` 依赖，版本由 `go.sum` 锁定
 
 ---
 
@@ -187,7 +190,7 @@ make bench
 # Go 环境
 export PATH=$PATH:/usr/local/go/bin
 
-# 同步 vendor/ 下的上游（见 vendor/README.md）
+# 同步 third_party/ 下的上游（见 third_party/README.md）
 make vendor-sync
 ```
 
@@ -199,4 +202,4 @@ make vendor-sync
 
 本仓库的**原创内容**（笔记、实验代码、文章）采用 [MIT License](LICENSE)。
 
-`vendor/` 下的第三方源码保留各自原有的许可证，详见各目录下的 `LICENSE` 文件与 `vendor/README.md` 的记录。
+`third_party/` 下的第三方源码保留各自原有的许可证，详见各目录下的 `LICENSE` 文件与 `third_party/README.md` 的记录。

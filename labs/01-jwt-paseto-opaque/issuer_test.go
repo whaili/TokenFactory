@@ -310,6 +310,7 @@ func TestNoNetworkOnJWTValidate(t *testing.T) {
 		t.Fatalf("validate with independent issuer: %v", err)
 	}
 }
+
 // equalSlices compares two string slices.
 func equalSlices(a, b []string) bool {
 	if len(a) != len(b) {
